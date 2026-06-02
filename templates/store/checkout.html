@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Checkout - ShopEase{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'index' %}">Home</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'cart_detail' %}">Cart</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Checkout</li>
+    </ol>
+</nav>
+
+<h1 class="mb-4"><i class="bi bi-credit-card"></i> Checkout</h1>
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <h4 class="card-title mb-4"><i class="bi bi-person"></i> Customer Information</h4>
+                <form method="POST">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div class="mb-3">
+                            {{ field.label_tag }}
+                            {{ field }}
+                            {% if field.errors %}
+                                <div class="text-danger small">{{ field.errors|striptags }}</div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                    <button type="submit" class="btn btn-success btn-lg w-100 mt-3">
+                        <i class="bi bi-check-circle"></i> Place Order
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-5">
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <h4 class="card-title mb-4"><i class="bi bi-receipt"></i> Order Summary</h4>
+                {% for item in cart.items.all %}
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>{{ item.product.name }} <small class="text-muted">x{{ item.quantity }}</small></span>
+                        <span>${{ item.subtotal }}</span>
+                    </div>
+                {% endfor %}
+                <hr>
+                <div class="d-flex justify-content-between mb-1">
+                    <span>Subtotal</span>
+                    <span>${{ subtotal }}</span>
+                </div>
+                <div class="d-flex justify-content-between mb-1">
+                    <span>Shipping</span>
+                    <span>{% if shipping_cost == 0 %}<span class="text-success fw-bold">FREE</span>{% else %}${{ shipping_cost }}{% endif %}</span>
+                </div>
+                <div class="d-flex justify-content-between mb-1">
+                    <span>Tax (10%)</span>
+                    <span>${{ tax }}</span>
+                </div>
+                <hr>
+                <div class="d-flex justify-content-between fw-bold fs-5">
+                    <span>Total</span>
+                    <span class="text-primary">${{ grand_total }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

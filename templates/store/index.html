@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home - ShopEase{% endblock %}
+
+{% block content %}
+
+<!-- Hero Banner -->
+<section class="hero-section bg-dark text-white rounded-4 p-5 mb-5 position-relative overflow-hidden">
+    <div class="row align-items-center">
+        <div class="col-lg-6">
+            <h1 class="display-3 fw-bold">Shop the Best Deals</h1>
+            <p class="lead mb-4">Discover premium products at unbeatable prices. Free shipping on orders over $50!</p>
+            <a href="{% url 'product_list' %}" class="btn btn-light btn-lg px-4 me-2">
+                <i class="bi bi-bag"></i> Shop Now
+            </a>
+            <a href="{% url 'category_list' %}" class="btn btn-outline-light btn-lg px-4">
+                <i class="bi bi-grid"></i> Browse Categories
+            </a>
+        </div>
+        <div class="col-lg-6 text-end d-none d-lg-block">
+            <i class="bi bi-bag-check-fill text-primary" style="font-size: 12rem; opacity: 0.3;"></i>
+        </div>
+    </div>
+</section>
+
+<!-- Categories Section -->
+{% if categories %}
+<section class="mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold"><i class="bi bi-grid"></i> Shop by Category</h2>
+        <a href="{% url 'category_list' %}" class="btn btn-outline-primary btn-sm">View All</a>
+    </div>
+    <div class="row g-3">
+        {% for category in categories %}
+            <div class="col-md-3 col-6">
+                <a href="{% url 'category_detail' category.slug %}" class="text-decoration-none">
+                    <div class="card border-0 bg-light text-center py-4 category-card h-100">
+                        <div class="card-body">
+                            {% if category.image %}
+                                <img src="{{ category.image.url }}" alt="{{ category.name }}" class="rounded mb-2" style="width: 60px; height: 60px; object-fit: cover;">
+                            {% else %}
+                                <i class="bi bi-folder2-open display-5 text-primary mb-2"></i>
+                            {% endif %}
+                            <h6 class="card-title text-dark">{{ category.name }}</h6>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+<!-- Featured Products -->
+{% if featured %}
+<section class="mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold"><i class="bi bi-star"></i> Featured Products</h2>
+        <a href="{% url 'product_list' %}" class="btn btn-outline-primary btn-sm">View All</a>
+    </div>
+    <div class="row g-4">
+        {% for product in featured %}
+            <div class="col-lg-3 col-md-6">
+                <div class="card h-100 border-0 shadow-sm product-card">
+                    <div class="position-relative">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 220px; object-fit: cover;">
+                        {% else %}
+                            <div class="bg-secondary d-flex align-items-center justify-content-center" style="height: 220px;">
+                                <i class="bi bi-image text-white" style="font-size: 3rem;"></i>
+                            </div>
+                        {% endif %}
+                        <span class="badge bg-warning text-dark position-absolute top-0 end-0 m-2">Featured</span>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h6 class="card-title">
+                            <a href="{% url 'product_detail' product.slug %}" class="text-decoration-none text-dark stretched-link">{{ product.name }}</a>
+                        </h6>
+                        <p class="card-text text-muted small flex-grow-1">{{ product.description|truncatewords:10 }}</p>
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <span class="fs-5 fw-bold text-primary">${{ product.price }}</span>
+                            {% if product.stock > 0 %}
+                                <span class="badge bg-success">In Stock</span>
+                            {% else %}
+                                <span class="badge bg-danger">Sold Out</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+<!-- Latest Products -->
+{% if latest %}
+<section class="mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold"><i class="bi bi-clock-history"></i> Latest Products</h2>
+        <a href="{% url 'product_list' %}" class="btn btn-outline-primary btn-sm">View All</a>
+    </div>
+    <div class="row g-4">
+        {% for product in latest %}
+            <div class="col-lg-3 col-md-6">
+                <div class="card h-100 border-0 shadow-sm product-card">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 180px; object-fit: cover;">
+                    {% else %}
+                        <div class="bg-secondary d-flex align-items-center justify-content-center" style="height: 180px;">
+                            <i class="bi bi-image text-white" style="font-size: 2.5rem;"></i>
+                        </div>
+                    {% endif %}
+                    <div class="card-body d-flex flex-column">
+                        <h6 class="card-title">
+                            <a href="{% url 'product_detail' product.slug %}" class="text-decoration-none text-dark stretched-link">{{ product.name }}</a>
+                        </h6>
+                        <div class="mt-auto d-flex justify-content-between align-items-center">
+                            <span class="fw-bold text-primary">${{ product.price }}</span>
+                            <small class="text-muted">{{ product.created_at|date:"M d" }}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+<!-- CTA Banner -->
+<section class="bg-primary text-white rounded-4 p-5 text-center mb-4">
+    <h2 class="fw-bold">Join ShopEase Today</h2>
+    <p class="lead mb-4">Sign up for exclusive deals and early access to new arrivals.</p>
+    <div class="d-flex justify-content-center gap-2">
+        <a href="#" class="btn btn-light btn-lg px-4"><i class="bi bi-person-plus"></i> Sign Up</a>
+        <a href="{% url 'product_list' %}" class="btn btn-outline-light btn-lg px-4"><i class="bi bi-bag"></i> Start Shopping</a>
+    </div>
+</section>
+
+{% endblock %}

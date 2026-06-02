@@ -1,0 +1,46 @@
+{% extends 'admin_dashboard/base_admin.html' %}
+
+{% block title %}Orders - ShopEase Admin{% endblock %}
+
+{% block content %}
+<h1 class="mb-4"><i class="bi bi-receipt"></i> Orders</h1>
+
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Customer</th>
+                    <th>Email</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                    <tr>
+                        <td>#{{ order.id }}</td>
+                        <td>{{ order.full_name }}</td>
+                        <td>{{ order.email }}</td>
+                        <td>${{ order.total }}</td>
+                    <td>
+                        <span class="badge bg-{% if order.status == 'pending' %}warning text-dark{% elif order.status == 'processing' %}info{% elif order.status == 'shipped' %}primary{% elif order.status == 'delivered' %}success{% else %}danger{% endif %}">{{ order.get_status_display }}</span>
+                        {% if order.paid %}<span class="badge bg-success ms-1">Paid</span>{% endif %}
+                    </td>
+                        <td>{{ order.created_at|date:"M d, Y" }}</td>
+                        <td>
+                            <a href="{% url 'admin_order_detail' order.id %}" class="btn btn-sm btn-outline-info"><i class="bi bi-eye"></i></a>
+                            <a href="{% url 'admin_order_delete' order.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete order #{{ order.id }}?')"><i class="bi bi-trash"></i></a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="7" class="text-center text-muted py-4">No orders found</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends 'admin_dashboard/base_admin.html' %}
+
+{% block title %}{% if category %}Edit{% else %}Add{% endif %} Category - ShopEase Admin{% endblock %}
+
+{% block content %}
+<h1 class="mb-4"><i class="bi bi-grid"></i> {% if category %}Edit{% else %}Add{% endif %} Category</h1>
+
+<div class="card shadow-sm">
+    <div class="card-body p-4">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label">Name</label>
+                <input type="text" name="name" class="form-control" value="{{ category.name|default:'' }}" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Description</label>
+                <textarea name="description" class="form-control" rows="3">{{ category.description|default:'' }}</textarea>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Image</label>
+                {% if category and category.image %}
+                    <div class="mb-2">
+                        <img src="{{ category.image.url }}" alt="{{ category.name }}" class="img-thumbnail" style="max-height: 120px;">
+                    </div>
+                {% endif %}
+                <input type="file" name="image" class="form-control">
+                {% if category and category.image %}
+                    <small class="text-muted">Leave blank to keep current image.</small>
+                {% endif %}
+            </div>
+            <button type="submit" class="btn btn-success"><i class="bi bi-check-lg"></i> {% if category %}Update{% else %}Create{% endif %}</button>
+            <a href="{% url 'admin_category_list' %}" class="btn btn-outline-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}
